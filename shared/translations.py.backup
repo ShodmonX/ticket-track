@@ -1,0 +1,220 @@
+TRANSLATIONS = {
+    "uz": {
+        "welcome": "Assalomu alaykum, {name}! 🎟️ Bilet Kuzatish Botiga xush kelibsiz.\n\nIltimos, o'zingizga qulay tilni tanlang:",
+        "welcome_back": "Assalomu alaykum, {name}! 🎟️ Bilet Kuzatish Botiga xush kelibsiz.",
+        "select_lang": "Iltimos, tilni tanlang:",
+        "lang_selected": "Til muvaffaqiyatli tanlandi: O'zbekcha 🇺🇿\nBot endi o'zbek tilida ish yuritadi.",
+        "menu": "Asosiy menyu:",
+        
+        "btn_search": "🔍 Bilet qidirish va monitoring",
+        "btn_my_monitorings": "📊 Mening monitoringlarim",
+        "btn_settings": "⚙️ Sozlamalar (Tilni o'zgartirish)",
+        "btn_help": "❓ Yordam",
+        
+        "help_text": "🎟️ **Bilet Kuzatish Boti** yordamida poyezd va avtobus chiptalarini doimiy kuzatishingiz mumkin.\n\n**Qanday ishlatiladi?**\n1. Asosiy menyudan **🔍 Bilet qidirish va monitoring** tugmasini bosing.\n2. Transport turi, jo'nash va borish manzillarini hamda sanani tanlang.\n3. **📊 Monitoringni yoqish** tugmasini bossangiz, bot biletlarni doimiy tekshiradi va ular paydo bo'lganda yoki soni kamayganda sizni ogohlantiradi.\n4. Shuningdek, chiptalarni monitoring qilmasdan, shunchaki **🔍 Tezkor qidiruv** orqali tekshirishingiz ham mumkin.",
+        
+        "select_transport": "Iltimos, transport turini tanlang:",
+        
+        # Bus flow localization
+        "select_origin_region": "Iltimos, jo'nab ketish viloyatini tanlang:",
+        "select_origin_city": "Jo'nab ketish shahrini tanlang:",
+        "select_dest_region": "Iltimos, borish viloyatini tanlang:",
+        "select_dest_city": "Borish shahrini tanlang:",
+        
+        # Train flow localization
+        "select_origin_train": "Jo'nab ketish vokzalini tanlang:",
+        "select_dest_train": "Borish vokzalini tanlang:",
+        
+        "invalid_destination": "Kechirasiz, ushbu yo'nalish bo'yicha qatnov mavjud emas. Iltimos, boshqa shahar tanlang:",
+        "select_date": "Sana tanlang yoki kiriting (format: KUN-OY-YIL, masalan: 22-06-2026):",
+        "invalid_date": "Sana noto'g'ri kiritildi. Iltimos, kelajakdagi to'g'ri sanani tanlang yoki kiriting:",
+        "confirm_subscription": "Kuzatuv ma'lumotlari:\n\n📍 **Marshrut:** {origin} ➔ {destination}\n📅 **Sana:** {date}\n🚆 **Transport:** {transport}\n\nKuzatuvni faollashtirasizmi yoki tezkor qidiruv qilasizmi?",
+        
+        "search_now": "🔍 Tezkor qidiruv",
+        "start_monitoring": "📊 Monitoringni yoqish",
+        "cancel": "❌ Bekor qilish",
+        "monitoring_added": "📊 Monitoring muvaffaqiyatli yoqildi! Biletlar holati o'zgarganda sizga xabar beramiz.",
+        
+        "no_tickets_found": "Kechirasiz, ushbu yo'nalish va sanada biletlar topilmadi.\n\n📍 **Marshrut:** {origin} ➔ {destination}\n📅 **Sana:** {date}\n🚆 **Transport:** {transport}",
+        "search_results": "🔍 **Qidiruv natijalari ({date}):**\n📍 {origin} ➔ {destination}\n\n{results}",
+        
+        "alert_appeared": "🚨 **SHOSHILINCH XABAR (Biletlar paydo bo'ldi!)** 🚨\n\n📍 Marshrut: {origin} ➔ {destination}\n📅 Sana: {date}\n\n{details}\n\nTezroq sotib olishga shoshiling!",
+        "alert_decreasing": "⚠️ **Diqqat, biletlar kamaymoqda!** ⚠️\n\n📍 Marshrut: {origin} ➔ {destination}\n📅 Sana: {date}\n\n{details}",
+        "alert_disappeared": "ℹ️ **Biletlar tugadi (Yo'qolish ogohlantirishi)**\n\n📍 Marshrut: {origin} ➔ {destination}\n📅 Sana: {date}\n\nHozirda barcha chiptalar sotilib bo'ldi.",
+        "btn_disable_monitoring": "🔕 Monitoringni o'chirish",
+        
+        "my_monitorings_title": "📊 **Sizning faol monitoringlaringiz:**",
+        "no_monitorings": "Sizda faol monitoringlar mavjud emas.",
+        "monitoring_item": "{num}. {origin} ➔ {destination} ({date}) [{transport}]",
+        "monitoring_detail": "Kuzatuv holati:\n\n📍 **Marshrut:** {origin} ➔ {destination}\n📅 **Sana:** {date}\n🚆 **Transport:** {transport}\n📈 **Holat:** {status}",
+        
+        "btn_check_now": "🔄 Hozir tekshirish",
+        "btn_pause": "⏸️ Vaqtincha to'xtatish",
+        "btn_resume": "▶️ Faollash",
+        "btn_delete": "🗑️ O'chirish",
+        "btn_back": "⬅️ Orqaga",
+        "status_active": "Faol",
+        "status_paused": "To'xtatilgan",
+        "status_expired": "Muddati o'tgan",
+        "action_paused": "Monitoring vaqtincha to'xtatildi.",
+        "action_resumed": "Monitoring faollashtirildi.",
+        "action_expired": "Ushbu monitoring muddati o'tgan va uni faollashtirib bo'lmaydi.",
+        "invalid_text_input": "Iltimos, faqat inline tugmalardan foydalaning.",
+        
+        "lbl_train": "Poyezd",
+        "lbl_bus": "Avtobus",
+        "lbl_seats": "Bo'sh joy",
+        "lbl_seat_unit": "o'rin",
+        "lbl_price": "Narxi",
+        "lbl_carrier": "Kompaniya",
+        "lbl_seat_count": "ta",
+        "lbl_currency": "so'm",
+    },
+    "ru": {
+        "welcome": "Здравствуйте, {name}! 🎟️ Добро пожаловать в бот отслеживания билетов.\n\nПожалуйста, выберите удобный для вас язык:",
+        "welcome_back": "Здравствуйте, {name}! 🎟️ Добро пожаловать в бот отслеживания билетов.",
+        "select_lang": "Пожалуйста, выберите язык:",
+        "lang_selected": "Язык успешно выбран: Русский 🇷🇺\nБот теперь работает на русском языке.",
+        "menu": "Главное меню:",
+        
+        "btn_search": "🔍 Поиск билетов и мониторинг",
+        "btn_my_monitorings": "📊 Мои мониторинги",
+        "btn_settings": "⚙️ Настройки (Смена языка)",
+        "btn_help": "❓ Помощь",
+        
+        "help_text": "🎟️ **Бот отслеживания билетов** поможет вам регулярно проверять наличие билетов на поезда и автобусы.\n\n**Как пользоваться?**\n1. Нажмите кнопку **🔍 Поиск билетов и мониторинг** в главном меню.\n2. Выберите тип транспорта, пункты отправления и прибытия, а также дату.\n3. Нажмите **📊 Включить мониторинг**, и бот начнет регулярно проверять наличие билетов, сообщая о появлении мест или их резком уменьшении.\n4. Также вы можете просто выполнить **🔍 Быстрый поиск** без установки мониторинга.",
+        
+        "select_transport": "Пожалуйста, выберите тип транспорта:",
+        
+        # Bus flow localization
+        "select_origin_region": "Пожалуйста, выберите область отправления:",
+        "select_origin_city": "Выберите город отправления:",
+        "select_dest_region": "Пожалуйста, выберите область прибытия:",
+        "select_dest_city": "Выберите город прибытия:",
+        
+        # Train flow localization
+        "select_origin_train": "Выберите вокзал отправления:",
+        "select_dest_train": "Выберите вокзал прибытия:",
+        
+        "invalid_destination": "К сожалению, рейсов по данному направлению нет. Пожалуйста, выберите другой город:",
+        "select_date": "Выберите дату или введите ее (формат: ДД-ММ-ГГГГ, например: 22-06-2026):",
+        "invalid_date": "Некорректная дата. Пожалуйста, выберите или введите правильную дату в будущем:",
+        "confirm_subscription": "Параметры мониторинга:\n\n📍 **Маршрут:** {origin} ➔ {destination}\n📅 **Дата:** {date}\n🚆 **Транспорт:** {transport}\n\nХотите включить мониторинг или выполнить быстрый поиск?",
+        
+        "search_now": "🔍 Быстрый поиск",
+        "start_monitoring": "📊 Включить мониторинг",
+        "cancel": "❌ Отмена",
+        "monitoring_added": "📊 Мониторинг успешно включен! Бот уведомит вас при изменении билетов.",
+        
+        "no_tickets_found": "К сожалению, билетов на выбранное направление и дату не найдено.\n\n📍 **Маршрут:** {origin} ➔ {destination}\n📅 **Дата:** {date}\n🚆 **Транспорт:** {transport}",
+        "search_results": "🔍 **Результаты поиска ({date}):**\n📍 {origin} ➔ {destination}\n\n{results}",
+        
+        "alert_appeared": "🚨 **СРОЧНОЕ СООБЩЕНИЕ (Появились билеты!)** 🚨\n\n📍 Направление: {origin} ➔ {destination}\n📅 Дата: {date}\n\n{details}\n\nПоторопитесь с покупкой!",
+        "alert_decreasing": "⚠️ **Внимание, билеты заканчиваются!** ⚠️\n\n📍 Направление: {origin} ➔ {destination}\n📅 Дата: {date}\n\n{details}",
+        "alert_disappeared": "ℹ️ **Билеты закончились (Уведомление об исчезновении)**\n\n📍 Направление: {origin} ➔ {destination}\n📅 Дата: {date}\n\nВсе билеты были успешно раскуплены.",
+        "btn_disable_monitoring": "🔕 Отключить мониторинг",
+        
+        "my_monitorings_title": "📊 **Ваши активные мониторинги:**",
+        "no_monitorings": "У вас нет активных мониторингов.",
+        "monitoring_item": "{num}. {origin} ➔ {destination} ({date}) [{transport}]",
+        "monitoring_detail": "Детали мониторинга:\n\n📍 **Маршрут:** {origin} ➔ {destination}\n📅 **Дата:** {date}\n🚆 **Транспорт:** {transport}\n📈 **Статус:** {status}",
+        
+        "btn_check_now": "🔄 Проверить сейчас",
+        "btn_pause": "⏸️ Приостановить",
+        "btn_resume": "▶️ Возобновить",
+        "btn_delete": "🗑️ Удалить",
+        "btn_back": "⬅️ Назад",
+        "status_active": "Активен",
+        "status_paused": "Приостановлен",
+        "status_expired": "Истёк",
+        "action_paused": "Мониторинг временно приостановлен.",
+        "action_resumed": "Мониторинг возобновлен.",
+        "action_expired": "Этот мониторинг просрочен, его нельзя активировать.",
+        "invalid_text_input": "Пожалуйста, используйте только inline кнопки.",
+        
+        "lbl_train": "Поезд",
+        "lbl_bus": "Автобус",
+        "lbl_seats": "Свободно",
+        "lbl_seat_unit": "мест",
+        "lbl_price": "Цена",
+        "lbl_carrier": "Компания",
+        "lbl_seat_count": "шт",
+        "lbl_currency": "сум",
+    },
+    "en": {
+        "welcome": "Hello, {name}! 🎟️ Welcome to the Ticket Tracking Bot.\n\nPlease choose your preferred language:",
+        "welcome_back": "Hello, {name}! 🎟️ Welcome to the Ticket Tracking Bot.",
+        "select_lang": "Please select a language:",
+        "lang_selected": "Language successfully selected: English 🇬🇧\nThe bot will now operate in English.",
+        "menu": "Main menu:",
+        
+        "btn_search": "🔍 Ticket Search & Monitoring",
+        "btn_my_monitorings": "📊 My Monitorings",
+        "btn_settings": "⚙️ Settings (Change Language)",
+        "btn_help": "❓ Help",
+        
+        "help_text": "🎟️ **Ticket Tracking Bot** allows you to continuously check for train and bus ticket availability.\n\n**How to use?**\n1. Press **🔍 Ticket Search & Monitoring** from the main menu.\n2. Choose transport type, departure, destination, and date.\n3. Click **📊 Start Monitoring** to let the bot check tickets continuously and alert you when they appear or decrease.\n4. You can also just perform a **🔍 Quick Search** without setting up a monitoring.",
+        
+        "select_transport": "Please select the transport type:",
+        
+        # Bus flow localization
+        "select_origin_region": "Please select the departure region:",
+        "select_origin_city": "Please select the departure city:",
+        "select_dest_region": "Please select the arrival region:",
+        "select_dest_city": "Please select the arrival city:",
+        
+        # Train flow localization
+        "select_origin_train": "Select departure station:",
+        "select_dest_train": "Select arrival station:",
+        
+        "invalid_destination": "Sorry, no routes found for this direction. Please select another city:",
+        "select_date": "Select a date or enter it (format: DD-MM-YYYY, e.g., 22-06-2026):",
+        "invalid_date": "Invalid date. Please choose or enter a valid date in the future:",
+        "confirm_subscription": "Monitoring details:\n\n📍 **Route:** {origin} ➔ {destination}\n📅 **Date:** {date}\n🚆 **Transport:** {transport}\n\nDo you want to enable monitoring or perform a quick search?",
+        
+        "search_now": "🔍 Quick Search",
+        "start_monitoring": "📊 Start Monitoring",
+        "cancel": "❌ Cancel",
+        "monitoring_added": "📊 Monitoring successfully enabled! We will notify you of any changes.",
+        
+        "no_tickets_found": "Sorry, no tickets found for this route and date.\n\n📍 **Route:** {origin} ➔ {destination}\n📅 **Date:** {date}\n🚆 **Transport:** {transport}",
+        "search_results": "🔍 **Search Results ({date}):**\n📍 {origin} ➔ {destination}\n\n{results}",
+        
+        "alert_appeared": "🚨 **URGENT ALERT (Tickets available!)** 🚨\n\n📍 Route: {origin} ➔ {destination}\n📅 Date: {date}\n\n{details}\n\nHurry up to buy!",
+        "alert_decreasing": "⚠️ **Warning: Tickets are running out!** ⚠️\n\n📍 Route: {origin} ➔ {destination}\n📅 Date: {date}\n\n{details}",
+        "alert_disappeared": "ℹ️ **Tickets sold out (Disappearance alert)**\n\n📍 Route: {origin} ➔ {destination}\n📅 Date: {date}\n\nAll tickets have been successfully sold out.",
+        "btn_disable_monitoring": "🔕 Stop Monitoring",
+        
+        "my_monitorings_title": "📊 **Your active monitorings:**",
+        "no_monitorings": "You have no active monitorings.",
+        "monitoring_item": "{num}. {origin} ➔ {destination} ({date}) [{transport}]",
+        "monitoring_detail": "Monitoring state:\n\n📍 **Route:** {origin} ➔ {destination}\n📅 **Date:** {date}\n🚆 **Transport:** {transport}\n📈 **Status:** {status}",
+        
+        "btn_check_now": "🔄 Check Now",
+        "btn_pause": "⏸️ Pause",
+        "btn_resume": "▶️ Resume",
+        "btn_delete": "🗑️ Delete",
+        "btn_back": "⬅️ Back",
+        "status_active": "Active",
+        "status_paused": "Paused",
+        "status_expired": "Expired",
+        "action_paused": "Monitoring paused temporarily.",
+        "action_resumed": "Monitoring resumed.",
+        "action_expired": "This monitoring is expired and cannot be activated.",
+        "invalid_text_input": "Please use inline buttons only.",
+        
+        "lbl_train": "Train",
+        "lbl_bus": "Bus",
+        "lbl_seats": "Available",
+        "lbl_seat_unit": "seats",
+        "lbl_price": "Price",
+        "lbl_carrier": "Company",
+        "lbl_seat_count": "seats",
+        "lbl_currency": "soums",
+    }
+}
+
+def get_text(key: str, lang: str = "uz", **kwargs) -> str:
+    lang = lang if lang in TRANSLATIONS else "uz"
+    text = TRANSLATIONS[lang].get(key, TRANSLATIONS["uz"].get(key, ""))
+    return text.format(**kwargs)
