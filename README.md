@@ -35,6 +35,7 @@ Loyiha ildiz papkasida `.env` faylini yarating va quyidagi o'zgaruvchilarni sozl
 ```env
 BOT_TOKEN=your_telegram_bot_token
 ADMIN_ID=your_telegram_user_id
+ADMIN_USERNAME=ShodmonX
 
 # Database Settings
 POSTGRES_USER=postgres
