@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     BOT_TOKEN: str = ""
     ADMIN_ID: int = 5889198092
+    ADMIN_USERNAME: str = "ShodmonX"
 
     POSTGRES_USER: str = "admin"
     POSTGRES_PASSWORD: str = "admin123"

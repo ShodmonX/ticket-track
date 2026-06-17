@@ -63,8 +63,8 @@ TRANSLATIONS = {
         "action_expired": "Ushbu kuzatuv muddati o'tgan, uni faollashtirib bo'lmaydi.",
         "invalid_text_input": "Iltimos, faqat menyudagi tugmalardan foydalaning.",
         
-        "limit_reached_free": "⚠️ **Kuzatuv limiti tugadi!**\n\nBepul tarifda faqat **1 ta** faol kuzatuv qo'shish mumkin. Ko'proq kuzatish uchun tarifingizni o'zgartiring.",
-        "limit_reached_standard": "⚠️ **Kuzatuv limiti tugadi!**\n\nStandart tarifda maksimal **5 ta** faol kuzatuv qo'shishingiz mumkin.",
+        "limit_reached_free": "⚠️ **Kuzatuv limiti tugadi!**\n\nBepul tarifda faqat **1 ta** faol kuzatuv qo'shish mumkin. Ko'proq kuzatish yoki tarifingizni o'zgartirish uchun admin bilan bog'laning: @{admin_username}",
+        "limit_reached_standard": "⚠️ **Kuzatuv limiti tugadi!**\n\nStandart tarifda maksimal **5 ta** faol kuzatuv qo'shishingiz mumkin. Tarifni o'zgartirish uchun admin bilan bog'laning: @{admin_username}",
         "admin_menu": "🛠️ **Admin Panel**\n\nQuyidagi amallardan birini tanlang:",
         "admin_enter_id": "Tarifini o'zgartirmoqchi bo'lgan foydalanuvchining Telegram ID sini kiriting:",
         "admin_user_not_found": "❌ Foydalanuvchi ma'lumotlar bazasida topilmadi.",
@@ -157,8 +157,8 @@ TRANSLATIONS = {
         "action_expired": "Срок действия отслеживания истёк, его нельзя активировать.",
         "invalid_text_input": "Пожалуйста, используйте только кнопки из меню.",
         
-        "limit_reached_free": "⚠️ **Лимит отслеживаний исчерпан!**\n\nНа бесплатном тарифе можно добавить только **1** активное отслеживание. Для расширения лимита обновите тариф.",
-        "limit_reached_standard": "⚠️ **Лимит отслеживаний исчерпан!**\n\nНа Стандартном тарифе можно добавить максимум **5** активных отслеживаний.",
+        "limit_reached_free": "⚠️ **Лимит отслеживаний исчерпан!**\n\nНа бесплатном тарифе можно добавить только **1** активное отслеживание. Для расширения лимита или смены тарифа свяжитесь с администратором: @{admin_username}",
+        "limit_reached_standard": "⚠️ **Лимит отслеживаний исчерпан!**\n\nНа Стандартном тарифе можно добавить максимум **5** активных отслеживаний. Для смены тарифа свяжитесь с администратором: @{admin_username}",
         "admin_menu": "🛠️ **Панель администратора**\n\nВыберите одно из действий ниже:",
         "admin_enter_id": "Введите Telegram ID пользователя, тариф которого вы хотите изменить:",
         "admin_user_not_found": "❌ Пользователь не найден в базе данных.",
@@ -251,8 +251,8 @@ TRANSLATIONS = {
         "action_expired": "This tracking is expired and can no longer be activated.",
         "invalid_text_input": "Please use the provided inline buttons.",
         
-        "limit_reached_free": "⚠️ **Tracking limit reached!**\n\nOn the Free plan, you can only have **1** active tracking. Update your plan to track more routes.",
-        "limit_reached_standard": "⚠️ **Tracking limit reached!**\n\nOn the Standard plan, you can have a maximum of **5** active trackings.",
+        "limit_reached_free": "⚠️ **Tracking limit reached!**\n\nOn the Free plan, you can only have **1** active tracking. To upgrade your plan, contact the administrator: @{admin_username}",
+        "limit_reached_standard": "⚠️ **Tracking limit reached!**\n\nOn the Standard plan, you can have a maximum of **5** active trackings. To upgrade your plan, contact the administrator: @{admin_username}",
         "admin_menu": "🛠️ **Admin Panel**\n\nSelect an action from below:",
         "admin_enter_id": "Enter the user's Telegram ID to update their plan:",
         "admin_user_not_found": "❌ User not found in the database.",
@@ -295,8 +295,8 @@ TRANSLATIONS = {
         "action_expired": "This tracking is expired and can no longer be activated.",
         "invalid_text_input": "Please use the provided inline buttons.",
         
-        "limit_reached_free": "⚠️ **Tracking limit reached!**\n\nOn the Free plan, you can only have **1** active tracking. Update your plan to track more routes.",
-        "limit_reached_standard": "⚠️ **Tracking limit reached!**\n\nOn the Standard plan, you can have a maximum of **5** active trackings.",
+        "limit_reached_free": "⚠️ **Tracking limit reached!**\n\nOn the Free plan, you can only have **1** active tracking. To upgrade your plan, contact the administrator: @{admin_username}",
+        "limit_reached_standard": "⚠️ **Tracking limit reached!**\n\nOn the Standard plan, you can have a maximum of **5** active trackings. To upgrade your plan, contact the administrator: @{admin_username}",
         "admin_menu": "🛠️ **Admin Panel**\n\nSelect an action from below:",
         "admin_enter_id": "Enter the user's Telegram ID to update their plan:",
         "admin_user_not_found": "❌ User not found in the database.",

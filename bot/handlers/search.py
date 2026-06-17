@@ -23,6 +23,7 @@ from bot.keyboards.inline import (
 from bot.keyboards.default import get_main_menu
 from tracker.railway import fast_ticket_track
 from tracker.avtoticket import fetch_avtoticket_trips
+from bot.core.config import settings
 
 router = Router()
 logger = logging.getLogger("__main__")
@@ -525,7 +526,7 @@ async def process_confirm_selection(callback: CallbackQuery, state: FSMContext):
             if sub_type == "free" and active_count >= 1:
                 if callback.message is not None and not isinstance(callback.message, InaccessibleMessage):
                     await callback.message.edit_text(
-                        get_text("limit_reached_free", lang),
+                        get_text("limit_reached_free", lang, admin_username=settings.ADMIN_USERNAME),
                         reply_markup=None,
                         parse_mode="Markdown",
                     )
@@ -536,7 +537,7 @@ async def process_confirm_selection(callback: CallbackQuery, state: FSMContext):
             if sub_type == "standard" and active_count >= 5:
                 if callback.message is not None and not isinstance(callback.message, InaccessibleMessage):
                     await callback.message.edit_text(
-                        get_text("limit_reached_standard", lang),
+                        get_text("limit_reached_standard", lang, admin_username=settings.ADMIN_USERNAME),
                         reply_markup=None,
                         parse_mode="Markdown",
                     )
