@@ -72,7 +72,7 @@ def get_language_keyboard() -> InlineKeyboardMarkup:
 
 def get_transport_keyboard(lang: str = "uz") -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🚆 Poezd" if lang == "uz" else "🚆 Поезд" if lang == "ru" else "🚆 Train", callback_data="transport:train")
+    builder.button(text="🚆 Poyezd" if lang == "uz" else "🚆 Поезд" if lang == "ru" else "🚆 Train", callback_data="transport:train")
     builder.button(text="🚌 Avtobus" if lang == "uz" else "🚌 Автобус" if lang == "ru" else "🚌 Bus", callback_data="transport:bus")
     builder.button(text=get_text("cancel", lang), callback_data="search:cancel")
     builder.adjust(1)
