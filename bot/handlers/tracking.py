@@ -551,7 +551,14 @@ async def track_check_callback(callback: CallbackQuery):
         except Exception as e:
             logger.error(f"Error deleting loading message: {e}")
 
-        results_text = get_text("search_results", lang, results=formatted)
+        results_text = get_text(
+            "search_results",
+            lang,
+            results=formatted,
+            date=sub.date,
+            origin=sub.origin_name,
+            destination=sub.destination_name,
+        )
         if results:
             results_text += get_text("price_legend", lang)
 
