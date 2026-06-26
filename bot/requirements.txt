@@ -6,3 +6,4 @@ sqlalchemy==2.0.51
 alembic==1.18.4
 requests==2.34.2
 httpx==0.28.1
+redis==5.0.4

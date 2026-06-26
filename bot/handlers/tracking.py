@@ -1,6 +1,7 @@
 from sqlalchemy import select, delete
 import logging
 import asyncio
+import time
 
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, InaccessibleMessage, InlineKeyboardMarkup
@@ -15,6 +16,11 @@ from tracker.avtoticket import fetch_avtoticket_trips
 
 router = Router()
 logger = logging.getLogger("__main__")
+
+import redis.asyncio as aioredis
+from bot.core.config import settings
+
+redis_client = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
 
 
 async def get_user_lang(tg_id: int) -> str:
@@ -50,7 +56,7 @@ async def auto_deactivate_expired(user_id: int):
 
 
 def get_subscriptions_keyboard(
-    subs: list[Subscription], lang: str
+    subs: list[Subscription], lang: str, is_archive: bool = False
 ) -> InlineKeyboardMarkup:
     uz_today_str = get_uz_today_str()
 
@@ -71,11 +77,20 @@ def get_subscriptions_keyboard(
         builder.button(text=text, callback_data=f"track:detail:{sub.id}")
     builder.adjust(1)
 
-    back_builder = InlineKeyboardBuilder()
-    back_builder.button(
-        text=get_text("btn_back", lang), callback_data="track:back_to_menu"
-    )
-    builder.attach(back_builder)
+    nav_builder = InlineKeyboardBuilder()
+    if not is_archive:
+        nav_builder.button(
+            text=get_text("btn_archive", lang), callback_data="track:archive_list"
+        )
+        nav_builder.button(
+            text=get_text("btn_back", lang), callback_data="track:back_to_menu"
+        )
+    else:
+        nav_builder.button(
+            text=get_text("btn_back", lang), callback_data="track:list"
+        )
+    nav_builder.adjust(1)
+    builder.attach(nav_builder)
     return builder.as_markup()
 
 
@@ -83,33 +98,42 @@ def get_subscription_detail_keyboard(
     sub_id: int, is_active: bool, is_expired: bool, lang: str
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    if not is_expired:
+    if not is_expired and is_active:
         builder.button(
             text=get_text("btn_check_now", lang),
             callback_data=f"track:check:{sub_id}",
         )
-        if is_active:
-            builder.button(
-                text=get_text("btn_pause", lang),
-                callback_data=f"track:pause:{sub_id}",
-            )
-        else:
-            builder.button(
-                text=get_text("btn_resume", lang),
-                callback_data=f"track:resume:{sub_id}",
-            )
-
-    builder.button(
-        text=get_text("btn_delete", lang),
-        callback_data=f"track:delete:{sub_id}",
-    )
-    builder.button(
-        text=get_text("btn_back", lang), callback_data="track:list"
-    )
-    if not is_expired:
+        builder.button(
+            text=get_text("btn_pause", lang),
+            callback_data=f"track:pause:{sub_id}",
+        )
+        builder.button(
+            text=get_text("btn_delete", lang),
+            callback_data=f"track:delete:{sub_id}",
+        )
+        builder.button(
+            text=get_text("btn_back", lang),
+            callback_data="track:list",
+        )
         builder.adjust(2, 2)
     else:
-        builder.adjust(2)
+        if not is_expired:
+            builder.button(
+                text=get_text("btn_restore", lang),
+                callback_data=f"track:restore:{sub_id}",
+            )
+        builder.button(
+            text=get_text("btn_permanent_delete", lang),
+            callback_data=f"track:permdelete:{sub_id}",
+        )
+        builder.button(
+            text=get_text("btn_back", lang),
+            callback_data="track:archive_list",
+        )
+        if not is_expired:
+            builder.adjust(2, 1)
+        else:
+            builder.adjust(1, 1)
     return builder.as_markup()
 
 
@@ -130,21 +154,27 @@ async def cmd_my_monitorings(message: Message):
 
     await auto_deactivate_expired(tg_id)
 
+    uz_today_str = get_uz_today_str()
     async with async_session() as session:
         stmt = (
             select(Subscription)
             .where(Subscription.user_id == tg_id)
+            .where(Subscription.is_active == True)
+            .where(Subscription.date >= uz_today_str)
             .order_by(Subscription.created_at.desc())
         )
         res = await session.execute(stmt)
         subs = list(res.scalars().all())
 
     if not subs:
-        await message.answer(get_text("no_monitorings", lang))
+        await message.answer(
+            get_text("no_monitorings", lang),
+            reply_markup=get_subscriptions_keyboard([], lang, is_archive=False),
+        )
     else:
         await message.answer(
             get_text("my_monitorings_title", lang),
-            reply_markup=get_subscriptions_keyboard(subs, lang),
+            reply_markup=get_subscriptions_keyboard(subs, lang, is_archive=False),
             parse_mode="Markdown",
         )
 
@@ -156,10 +186,13 @@ async def track_list_callback(callback: CallbackQuery):
 
     await auto_deactivate_expired(tg_id)
 
+    uz_today_str = get_uz_today_str()
     async with async_session() as session:
         stmt = (
             select(Subscription)
             .where(Subscription.user_id == tg_id)
+            .where(Subscription.is_active == True)
+            .where(Subscription.date >= uz_today_str)
             .order_by(Subscription.created_at.desc())
         )
         res = await session.execute(stmt)
@@ -173,12 +206,49 @@ async def track_list_callback(callback: CallbackQuery):
     if not subs:
         await callback.message.edit_text(
             get_text("no_monitorings", lang),
-            reply_markup=get_subscriptions_keyboard([], lang),
+            reply_markup=get_subscriptions_keyboard([], lang, is_archive=False),
         )
     else:
         await callback.message.edit_text(
             get_text("my_monitorings_title", lang),
-            reply_markup=get_subscriptions_keyboard(subs, lang),
+            reply_markup=get_subscriptions_keyboard(subs, lang, is_archive=False),
+            parse_mode="Markdown",
+        )
+    await callback.answer()
+
+
+@router.callback_query(F.data == "track:archive_list")
+async def track_archive_list_callback(callback: CallbackQuery):
+    tg_id = callback.from_user.id
+    lang = await get_user_lang(tg_id)
+
+    await auto_deactivate_expired(tg_id)
+
+    uz_today_str = get_uz_today_str()
+    async with async_session() as session:
+        stmt = (
+            select(Subscription)
+            .where(Subscription.user_id == tg_id)
+            .where((Subscription.is_active == False) | (Subscription.date < uz_today_str))
+            .order_by(Subscription.created_at.desc())
+        )
+        res = await session.execute(stmt)
+        subs = list(res.scalars().all())
+
+    if callback.message is None or isinstance(
+        callback.message, InaccessibleMessage
+    ):
+        return
+
+    if not subs:
+        await callback.message.edit_text(
+            get_text("no_archived", lang),
+            reply_markup=get_subscriptions_keyboard([], lang, is_archive=True),
+        )
+    else:
+        await callback.message.edit_text(
+            get_text("archive_title", lang),
+            reply_markup=get_subscriptions_keyboard(subs, lang, is_archive=True),
             parse_mode="Markdown",
         )
     await callback.answer()
@@ -289,6 +359,7 @@ async def track_pause_callback(callback: CallbackQuery):
 
 
 @router.callback_query(F.data.startswith("track:resume:"))
+@router.callback_query(F.data.startswith("track:restore:"))
 async def track_resume_callback(callback: CallbackQuery):
     if callback.data is None:
         return
@@ -346,20 +417,26 @@ async def track_delete_callback(callback: CallbackQuery):
     lang = await get_user_lang(tg_id)
 
     async with async_session() as session:
-        stmt = delete(Subscription).where(Subscription.id == sub_id)
-        await session.execute(stmt)
-        await session.commit()
+        stmt = select(Subscription).where(Subscription.id == sub_id)
+        res = await session.execute(stmt)
+        sub = res.scalar_one_or_none()
+        if sub:
+            sub.is_active = False
+            await session.commit()
 
-        # Re-fetch subscriptions list
+        # Re-fetch ACTIVE subscriptions list
+        uz_today_str = get_uz_today_str()
         stmt_list = (
             select(Subscription)
             .where(Subscription.user_id == tg_id)
+            .where(Subscription.is_active == True)
+            .where(Subscription.date >= uz_today_str)
             .order_by(Subscription.created_at.desc())
         )
         res_list = await session.execute(stmt_list)
         subs = list(res_list.scalars().all())
 
-    await callback.answer(get_text("action_deleted", lang))
+    await callback.answer(get_text("action_paused", lang))
 
     if callback.message is None or isinstance(
         callback.message, InaccessibleMessage
@@ -369,12 +446,56 @@ async def track_delete_callback(callback: CallbackQuery):
     if not subs:
         await callback.message.edit_text(
             get_text("no_monitorings", lang),
-            reply_markup=get_subscriptions_keyboard([], lang),
+            reply_markup=get_subscriptions_keyboard([], lang, is_archive=False),
         )
     else:
         await callback.message.edit_text(
             get_text("my_monitorings_title", lang),
-            reply_markup=get_subscriptions_keyboard(subs, lang),
+            reply_markup=get_subscriptions_keyboard(subs, lang, is_archive=False),
+            parse_mode="Markdown",
+        )
+
+
+@router.callback_query(F.data.startswith("track:permdelete:"))
+async def track_permanent_delete_callback(callback: CallbackQuery):
+    if callback.data is None:
+        return
+    sub_id = int(callback.data.split(":")[2])
+    tg_id = callback.from_user.id
+    lang = await get_user_lang(tg_id)
+
+    async with async_session() as session:
+        stmt = delete(Subscription).where(Subscription.id == sub_id)
+        await session.execute(stmt)
+        await session.commit()
+
+        # Re-fetch ARCHIVED subscriptions list
+        uz_today_str = get_uz_today_str()
+        stmt_list = (
+            select(Subscription)
+            .where(Subscription.user_id == tg_id)
+            .where((Subscription.is_active == False) | (Subscription.date < uz_today_str))
+            .order_by(Subscription.created_at.desc())
+        )
+        res_list = await session.execute(stmt_list)
+        subs = list(res_list.scalars().all())
+
+    await callback.answer(get_text("action_permanent_deleted", lang))
+
+    if callback.message is None or isinstance(
+        callback.message, InaccessibleMessage
+    ):
+        return
+
+    if not subs:
+        await callback.message.edit_text(
+            get_text("no_archived", lang),
+            reply_markup=get_subscriptions_keyboard([], lang, is_archive=True),
+        )
+    else:
+        await callback.message.edit_text(
+            get_text("archive_title", lang),
+            reply_markup=get_subscriptions_keyboard(subs, lang, is_archive=True),
             parse_mode="Markdown",
         )
 
@@ -387,10 +508,32 @@ async def track_check_callback(callback: CallbackQuery):
     tg_id = callback.from_user.id
     lang = await get_user_lang(tg_id)
 
+    cooldown_key = f"cooldown:check:{tg_id}"
+    try:
+        ttl = await redis_client.ttl(cooldown_key)
+        if ttl > 0:
+            msg_text = (
+                f"⚠️ Iltimos, biroz kuting. Keyingi tezkor qidiruvni {ttl} soniyadan so'ng amalga oshira olasiz."
+                if lang == "uz"
+                else f"⚠️ Пожалуйста, подождите. Вы сможете выполнить быстрый поиск через {ttl} сек."
+                if lang == "ru"
+                else f"⚠️ Please wait. You can perform quick search in {ttl} seconds."
+            )
+            await callback.answer(msg_text, show_alert=True)
+            return
+    except Exception as e:
+        logger.error(f"Redis error checking cooldown: {e}")
+
     async with async_session() as session:
         stmt = select(Subscription).where(Subscription.id == sub_id)
         res = await session.execute(stmt)
         sub = res.scalar_one_or_none()
+
+    if sub:
+        try:
+            await redis_client.set(cooldown_key, "active", ex=60)
+        except Exception as e:
+            logger.error(f"Redis error setting cooldown: {e}")
 
     if not sub:
         await callback.answer("Error: Subscription not found")

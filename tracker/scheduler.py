@@ -150,7 +150,7 @@ def compare_states(prev: dict, curr: dict, user_lang: str = "uz") -> tuple[list[
                 prev_s = prev_seats[c_key]
                 # Safe .get() fallback for legacy data structures
                 prev_free = prev_s.get("seats", 0) if isinstance(prev_s, dict) else 0
-                if free > prev_free:
+                if prev_free == 0:
                     t_appeared_lines.append(f"  🔹 {c_display}: `{free}` {get_text('lbl_seat_count', user_lang)} — {price_str}")
                 elif free < prev_free:
                     t_decreasing_lines.append(f"  🔹 {c_display}: `{prev_free}` ➔ `{free}` {get_text('lbl_seat_count', user_lang)}")
@@ -209,7 +209,7 @@ def compare_states(prev: dict, curr: dict, user_lang: str = "uz") -> tuple[list[
         else:
             prev_b = prev_buses[key]
             prev_free = prev_b["seats"]
-            if free > prev_free:
+            if prev_free == 0:
                 appeared.append(
                     f"{header}\n  🔹 {get_text('lbl_seats', user_lang)}: `{free}` o'rin — {price_str}" if user_lang == "uz"
                     else f"{header}\n  🔹 {get_text('lbl_seats', user_lang)}: `{free}` мест — {price_str}"
@@ -235,12 +235,27 @@ def compare_states(prev: dict, curr: dict, user_lang: str = "uz") -> tuple[list[
     return appeared, decreasing, disappeared
 
 
-def get_disable_keyboard(sub_id: int, lang: str) -> InlineKeyboardMarkup:
+def get_alert_keyboard(sub_id: int, lang: str, train_buy_url: str = None, bus_buy_url: str = None) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
+    if train_buy_url and bus_buy_url:
+        t_text = f"💸 {get_text('lbl_train', lang)} " + (
+            "chiptasini olish" if lang == "uz" else "купить" if lang == "ru" else "buy ticket"
+        )
+        b_text = f"💸 {get_text('lbl_bus', lang)} " + (
+            "chiptasini olish" if lang == "uz" else "купить" if lang == "ru" else "buy ticket"
+        )
+        builder.button(text=t_text, url=train_buy_url)
+        builder.button(text=b_text, url=bus_buy_url)
+    elif train_buy_url:
+        builder.button(text=get_text("btn_buy", lang), url=train_buy_url)
+    elif bus_buy_url:
+        builder.button(text=get_text("btn_buy", lang), url=bus_buy_url)
+
     builder.button(
         text=get_text("btn_disable_monitoring", lang),
         callback_data=f"track:delete:{sub_id}"
     )
+    builder.adjust(1)
     return builder.as_markup()
 
 
@@ -353,6 +368,13 @@ async def check_all_active_subscriptions():
 
         # Send alerts if changed
         if has_previous_data:
+            train_buy_url = None
+            bus_buy_url = None
+            if sub.transport_type == "train" or sub.transport_type == "both":
+                train_buy_url = "https://eticket.railway.uz/uz/home"
+            if sub.transport_type == "bus" or sub.transport_type == "both":
+                bus_buy_url = f"https://avtoticket.uz/trips/{sub.bus_dep_id}/{sub.bus_arv_id}/{sub.date}"
+
             if appeared:
                 details = "\n\n".join(appeared)
                 text = get_text(
@@ -364,7 +386,7 @@ async def check_all_active_subscriptions():
                     details=details
                 )
                 try:
-                    await bot.send_message(sub.user_id, text, reply_markup=get_disable_keyboard(sub.id, user_lang), parse_mode="Markdown")
+                    await bot.send_message(sub.user_id, text, reply_markup=get_alert_keyboard(sub.id, user_lang, train_buy_url, bus_buy_url), parse_mode="Markdown")
                 except Exception as e:
                     logger.error(f"Failed to send alert to user {sub.user_id}: {e}")
 
@@ -379,22 +401,45 @@ async def check_all_active_subscriptions():
                     details=details
                 )
                 try:
-                    await bot.send_message(sub.user_id, text, reply_markup=get_disable_keyboard(sub.id, user_lang), parse_mode="Markdown")
+                    await bot.send_message(sub.user_id, text, reply_markup=get_alert_keyboard(sub.id, user_lang, train_buy_url, bus_buy_url), parse_mode="Markdown")
                 except Exception as e:
                     logger.error(f"Failed to send alert to user {sub.user_id}: {e}")
 
+            # Calculate total remaining seats across all current trains/buses
+            total_curr_seats = 0
+            for t_val in curr_state.get("trains", {}).values():
+                for s_val in t_val.get("seats", {}).values():
+                    total_curr_seats += s_val.get("seats", 0) if isinstance(s_val, dict) else 0
+            for b_val in curr_state.get("buses", {}).values():
+                total_curr_seats += b_val.get("seats", 0)
+
             if disappeared:
-                text = get_text(
-                    "alert_disappeared",
-                    lang=user_lang,
-                    origin=sub.origin_name,
-                    destination=sub.destination_name,
-                    date=sub.date
-                )
-                try:
-                    await bot.send_message(sub.user_id, text, reply_markup=get_disable_keyboard(sub.id, user_lang), parse_mode="Markdown")
-                except Exception as e:
-                    logger.error(f"Failed to send alert to user {sub.user_id}: {e}")
+                if total_curr_seats == 0:
+                    text = get_text(
+                        "alert_disappeared",
+                        lang=user_lang,
+                        origin=sub.origin_name,
+                        destination=sub.destination_name,
+                        date=sub.date
+                    )
+                    try:
+                        await bot.send_message(sub.user_id, text, reply_markup=get_alert_keyboard(sub.id, user_lang), parse_mode="Markdown")
+                    except Exception as e:
+                        logger.error(f"Failed to send alert to user {sub.user_id}: {e}")
+                else:
+                    details = "\n\n".join(disappeared)
+                    text = get_text(
+                        "alert_partially_disappeared",
+                        lang=user_lang,
+                        origin=sub.origin_name,
+                        destination=sub.destination_name,
+                        date=sub.date,
+                        details=details
+                    )
+                    try:
+                        await bot.send_message(sub.user_id, text, reply_markup=get_alert_keyboard(sub.id, user_lang, train_buy_url, bus_buy_url), parse_mode="Markdown")
+                    except Exception as e:
+                        logger.error(f"Failed to send alert to user {sub.user_id}: {e}")
 
         # Save the current state in database
         try:
